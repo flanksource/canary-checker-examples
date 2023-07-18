@@ -30,3 +30,11 @@ jobs:
           context: playwright/
           push: true
           tags: docker.io/flanksource/canary-playwright:latest
+
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: newman/
+          push: true
+          tags: docker.io/flanksource/canary-newman:latest
+
