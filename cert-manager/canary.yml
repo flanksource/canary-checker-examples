@@ -1,0 +1,30 @@
+apiVersion: canaries.flanksource.com/v1
+kind: Canary
+metadata:
+  name: cert-manager
+spec:
+  interval: 120
+  severity: high
+  configDB:
+    - name: cert-manager-check
+      icon: cert-manager
+      query: SELECT * FROM config_items WHERE config_class = 'Certificate'
+      transform:
+        javascript: |
+          JSON.stringify(results.results.map(function(r) {
+            var pass = false
+            var message = ''
+            for (condition in r.config.status.conditions) {
+              message += r.config.status.conditions[condition].type + ':' + r.config.status.conditions[condition].status + ' '
+              if (r.config.status.conditions[condition].type == "Ready" && r.config.status.conditions[condition].status == "True") {
+                pass = true
+              }
+            }
+            return {
+              name: r.name,
+              pass: pass,
+              labels: r.tags,
+              icon: 'cert-manager',
+              message: message,
+            }
+          }))

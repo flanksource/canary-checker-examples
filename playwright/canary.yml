@@ -19,5 +19,5 @@ spec:
       spec:
         containers:
           - name: playwright
-            image: docker.io/yashmehrotra/playwright-test 
+            image: ghcr.io/flanksource/canary-playwright:latest
             command: ["/start.sh"]

@@ -19,5 +19,5 @@ spec:
       spec:
         containers:
           - name: k6
-            image: docker.io/yashmehrotra/k6-test 
+            image: ghcr.io/flanksource/canary-k6:latest
             command: ["/start.sh"]
