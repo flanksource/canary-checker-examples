@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - 'main'
+  workflow_dispatch:
 
 jobs:
   docker:
@@ -24,17 +25,24 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
+      - name: Build and push playwright
         uses: docker/build-push-action@v4
         with:
           context: playwright/
           push: true
           tags: docker.io/flanksource/canary-playwright:latest
 
-      - name: Build and push
+      - name: Build and push newman
         uses: docker/build-push-action@v4
         with:
           context: newman/
           push: true
           tags: docker.io/flanksource/canary-newman:latest
+
+      - name: Build and push k6
+        uses: docker/build-push-action@v4
+        with:
+          context: k6/
+          push: true
+          tags: docker.io/flanksource/canary-k6:latest
 
