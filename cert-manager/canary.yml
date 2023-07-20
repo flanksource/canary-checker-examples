@@ -5,25 +5,27 @@ metadata:
 spec:
   interval: 120
   severity: high
-  configDB:
+  kubernetes:
     - name: cert-manager-check
       icon: cert-manager
-      query: SELECT * FROM config_items WHERE config_class = 'Certificate'
+      kind: Certificate
       transform:
         javascript: |
-          JSON.stringify(results.results.map(function(r) {
+          JSON.stringify(results.map(function(result) {
+            var r = result.Object
             var pass = false
             var message = ''
-            for (condition in r.config.status.conditions) {
-              message += r.config.status.conditions[condition].type + ':' + r.config.status.conditions[condition].status + ' '
-              if (r.config.status.conditions[condition].type == "Ready" && r.config.status.conditions[condition].status == "True") {
+            for (condition in r.status.conditions) {
+              message += r.status.conditions[condition].type + ':' + r.status.conditions[condition].status + ' '
+              if (r.status.conditions[condition].type == "Ready" && r.status.conditions[condition].status == "True") {
                 pass = true
               }
             }
             return {
-              name: r.name,
+              name: r.metadata.name,
+              namespace: r.metadata.namespace,
               pass: pass,
-              labels: r.tags,
+              labels: r.metadata.labels,
               icon: 'cert-manager',
               message: message,
             }
