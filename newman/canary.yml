@@ -19,5 +19,5 @@ spec:
       spec:
         containers:
           - name: newman
-            image: docker.io/yashmehrotra/newman-test 
+            image: ghcr.io/flanksource/canary-newman:latest
             command: ["/start.sh"]

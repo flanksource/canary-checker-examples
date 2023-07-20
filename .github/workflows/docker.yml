@@ -9,7 +9,6 @@ on:
 jobs:
   build-push:
     runs-on: ubuntu-latest
-    name: Push Docker images to the registry
     permissions:
       packages: write
       contents: read
