@@ -1,0 +1,39 @@
+apiVersion: canaries.flanksource.com/v1
+kind: Canary
+metadata:
+  name: flanksource-playwright
+spec:
+  schedule: '@every 5m'
+  severity: high
+  junit:
+    - testResults: "/tmp/"
+      name: flanksource-playwright
+      display:
+        template: |
+          ✅ {{.results.passed}} ❌ {{.results.failed}} in 🕑 {{.results.duration}}
+          {{  range $r := .results.suites}}
+          {{- if gt (conv.ToInt $r.failed)  0 }}
+            {{$r.name}} ✅ {{$r.passed}} ❌ {{$r.failed}} in 🕑 {{$r.duration}}
+          {{- end }}
+          {{- end }}
+      spec:
+        containers:
+          - name: playwright
+            image: ghcr.io/flanksource/flanksource-playwright:latest
+            command: ["/start.sh"]
+            env:
+              - name: FLANKSOURCE_URL
+                valueFrom:
+                  secretKeyRef:
+                    name: flanksource-playwright-credentials
+                    key: url
+              - name: FLANKSOURCE_EMAIL
+                valueFrom:
+                  secretKeyRef:
+                    name: flanksource-playwright-credentials
+                    key: email
+              - name: FLANKSOURCE_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: flanksource-playwright-credentials
+                    key: password
